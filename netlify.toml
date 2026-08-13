@@ -1,0 +1,25 @@
+# Netlify configuration for Crossgar Free Presbyterian Church
+# The site is plain static HTML/CSS/JS, so there is no build step —
+# Netlify just publishes the folder as-is.
+
+[build]
+  publish = "."
+  command = ""
+
+# Nice-to-have security + caching headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/css/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

@@ -70,3 +70,67 @@
     }
   }
 })();
+
+/* ---- latest sermons from SermonAudio (auto-updates; falls back to the static list) ---- */
+(function () {
+  'use strict';
+  var list = document.getElementById('sermon-list');
+  if (!list) return;
+  var key = window.SERMONAUDIO_API_KEY;
+  var bc  = window.SERMONAUDIO_BROADCASTER || list.getAttribute('data-sa-broadcaster') || 'crossgar';
+  if (!key) return; // no key yet — keep the manual list
+
+  var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function svcLabel(s) {
+    var hay = ((s.fullTitle || '') + ' ' + (s.displayEventType || s.eventType || '')).toLowerCase();
+    if (/midweek|mid week|bible study|prayer|wednesday/.test(hay)) return 'Wednesday';
+    if (/evening|\bpm\b/.test(hay)) return 'Sunday Evening';
+    if (/morning|\bam\b/.test(hay)) return 'Sunday Morning';
+    return s.displayEventType || s.eventType || '';
+  }
+
+  function cleanTitle(s) {
+    var raw = s.fullTitle || s.displayTitle || 'Sermon';
+    var sp = (s.speaker && s.speaker.displayName) ? s.speaker.displayName.toLowerCase() : '';
+    var parts = raw.split('|').map(function (x) { return x.trim(); }).filter(Boolean).filter(function (p) {
+      if (/^\d{1,2}[\/.\-]\d/.test(p)) return false;   // dates
+      if (/^(am|pm)$/i.test(p)) return false;          // AM / PM tags
+      if (/^rev\b/i.test(p)) return false;             // "Rev ..." speaker tag
+      if (sp && p.toLowerCase() === sp) return false;  // bare speaker name
+      return true;
+    });
+    if (!parts.length) return raw;
+    parts.sort(function (a, b) { return b.length - a.length; });
+    return parts[0];
+  }
+
+  function card(s) {
+    var d = s.preachDate ? new Date(s.preachDate) : null;
+    var day = d ? ('0' + d.getDate()).slice(-2) : '';
+    var mon = d ? MON[d.getMonth()] : '';
+    var title = cleanTitle(s);
+    var sp = (s.speaker && s.speaker.displayName) ? s.speaker.displayName : '';
+    var ev = svcLabel(s);
+    var url = s.sermonID ? ('https://www.sermonaudio.com/sermons/' + s.sermonID + '/') : ('https://www.sermonaudio.com/broadcasters/' + bc + '/');
+    var esc = function (t) { var p = document.createElement('p'); p.textContent = t == null ? '' : t; return p.innerHTML; };
+    return '<a class="sermon" href="' + url + '" target="_blank" rel="noopener">' +
+      '<div class="sermon__date"><b>' + day + '</b><span>' + mon + '</span></div>' +
+      '<div><div class="sermon__title">' + esc(title) + '</div><div class="sermon__meta">' + esc(sp) + '</div></div>' +
+      '<span class="sermon__meta" style="align-self:center">' + esc(ev) + '</span>' +
+      '<span class="sermon__play"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>' +
+      '</a>';
+  }
+
+  var url = 'https://api.sermonaudio.com/v2/node/sermons?broadcasterID=' +
+    encodeURIComponent(bc) + '&sortBy=newest&pageSize=6';
+  fetch(url, { headers: { 'X-API-Key': key, 'Accept': 'application/json' } })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) {
+      var items = j && (j.results || j.nodes);
+      if (items && items.length) {
+        list.innerHTML = items.slice(0, 6).map(card).join('');
+      }
+    })
+    .catch(function () { /* keep the static fallback */ });
+})();

@@ -4,15 +4,22 @@
 // function runs on Netlify (same origin as the site), adds the header, and
 // returns the JSON — used for the live/webcast status and the latest sermons.
 //
-// The key can be set as a Netlify environment variable (SERMONAUDIO_API_KEY)
-// under Site settings → Environment variables; it falls back to the value
-// below if none is set.
+// The key is read from the Netlify environment variable SERMONAUDIO_API_KEY
+// (Site settings → Environment variables, Functions scope). It is not stored
+// in this repository.
 
-const KEY = process.env.SERMONAUDIO_API_KEY || "55D3E9E9-76A1-4274-AE5B-0C50D06232E3";
+const KEY = process.env.SERMONAUDIO_API_KEY;
 const BROADCASTER = process.env.SERMONAUDIO_BROADCASTER || "crossgar";
 const API = "https://api.sermonaudio.com/v2/node/";
 
 exports.handler = async function (event) {
+  if (!KEY) {
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      body: JSON.stringify({ error: "SERMONAUDIO_API_KEY is not set" })
+    };
+  }
   const q = event.queryStringParameters || {};
   const kind = q.kind || "live";
 

@@ -48,27 +48,29 @@
     reveals.forEach(function (el) { el.classList.add('in'); });
   }
 
-  /* ---- live status (schedule-aware placeholder) ----
-     Services: Sun 11:30 & 19:00, Wed 20:00 (Europe/London).
-     Shows a LIVE state during service windows; otherwise the next service. */
+  /* ---- live status (driven by SermonAudio's live webcast flag) ----
+     Polls the Netlify proxy (/api/sa?kind=live) which reads the broadcaster's
+     webcastInProgress flag. The red dot (nav + hero) and the status pill only
+     switch to the "live" state while an actual broadcast is running. */
   var statusEl = document.querySelector('[data-live-status]');
-  if (statusEl) {
-    var now = new Date();
-    var day = now.getDay();            // 0 Sun .. 6 Sat
-    var mins = now.getHours() * 60 + now.getMinutes();
-    var windows = [
-      { day: 0, start: 11 * 60 + 30, end: 12 * 60 + 45 },
-      { day: 0, start: 19 * 60,      end: 20 * 60 + 15 },
-      { day: 3, start: 20 * 60,      end: 21 * 60 + 15 }
-    ];
-    var isLive = windows.some(function (w) { return w.day === day && mins >= w.start && mins <= w.end; });
-    if (isLive) {
-      statusEl.classList.add('live-status--on');
-      statusEl.querySelector('[data-live-text]').textContent = 'Live now';
-    } else {
-      statusEl.querySelector('[data-live-text]').textContent = 'Offline — next service below';
-    }
+  var textEl = statusEl && statusEl.querySelector('[data-live-text]');
+
+  function setLive(live) {
+    document.body.classList.toggle('is-live', live);
+    if (statusEl) statusEl.classList.toggle('live-status--on', live);
+    if (textEl) textEl.textContent = live ? 'Online — Service live now' : 'Offline — next service below';
   }
+
+  function checkLive() {
+    fetch('/api/sa?kind=live', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { setLive(!!(j && j.webcastInProgress)); })
+      .catch(function () { setLive(false); });
+  }
+
+  document.body.classList.remove('is-live'); // dot hidden until a broadcast is confirmed
+  checkLive();
+  setInterval(checkLive, 60000);             // re-check every minute
 })();
 
 /* ---- latest sermons from SermonAudio (auto-updates; falls back to the static list) ---- */
@@ -76,9 +78,7 @@
   'use strict';
   var list = document.getElementById('sermon-list');
   if (!list) return;
-  var key = window.SERMONAUDIO_API_KEY;
   var bc  = window.SERMONAUDIO_BROADCASTER || list.getAttribute('data-sa-broadcaster') || 'crossgar';
-  if (!key) return; // no key yet — keep the manual list
 
   var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
@@ -122,9 +122,7 @@
       '</a>';
   }
 
-  var url = 'https://api.sermonaudio.com/v2/node/sermons?broadcasterID=' +
-    encodeURIComponent(bc) + '&sortBy=newest&pageSize=6';
-  fetch(url, { headers: { 'X-API-Key': key, 'Accept': 'application/json' } })
+  fetch('/api/sa?kind=sermons', { headers: { 'Accept': 'application/json' }, cache: 'no-store' })
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (j) {
       var items = j && (j.results || j.nodes);

@@ -6,6 +6,17 @@
   publish = "."
   command = ""
 
+# Serverless function that proxies the SermonAudio API (adds the X-API-Key
+# header server-side, which the browser cannot do cross-origin).
+[functions]
+  directory = "netlify/functions"
+
+# Friendly same-origin path for the proxy: /api/sa?kind=live | kind=sermons
+[[redirects]]
+  from = "/api/sa"
+  to = "/.netlify/functions/sa"
+  status = 200
+
 # Nice-to-have security + caching headers
 [[headers]]
   for = "/*"

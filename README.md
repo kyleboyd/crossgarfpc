@@ -30,7 +30,7 @@ photographic hero frames in the style of gty.org.
 
 ## Details on file
 Address 83–85 Killyleagh Street, Crossgar, Co. Down, BT30 9DQ ·
-Tel 028 9753 1226 · Facebook /crossgarfree · SermonAudio /broadcasters/crossgar.
+ · Facebook /crossgarfree · SermonAudio /broadcasters/crossgar.
 Update the YouTube handle placeholder (`@crossgarfree`) once confirmed.
 
 No build step or dependencies — open `index.html` in a browser, or upload the

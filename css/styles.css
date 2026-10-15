@@ -205,6 +205,21 @@ body.is-live .live-dot{display:inline-block;}
 .hero__est::before{content:"";width:34px;height:2px;background:var(--gold);}
 .hero h1{font-family:var(--font-body);font-weight:600;text-transform:none;font-size:clamp(2.7rem,6.4vw,5rem);line-height:1.02;letter-spacing:-.015em;}
 .hero h1 em{font-style:italic;color:var(--gold-soft);}
+/* "revival" catches the light once on load */
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .hero h1 em{
+    background:linear-gradient(100deg,var(--gold-soft) 0 38%,#fff3d6 50%,var(--gold-soft) 62% 100%);
+    background-size:250% 100%;background-position:-35% 0;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+}
+@media (prefers-reduced-motion:no-preference){
+  @supports ((-webkit-background-clip:text) or (background-clip:text)){
+    .hero h1 em{background-position:135% 0;animation:revivalShine 2.4s cubic-bezier(.4,0,.2,1) .45s 1 forwards;}
+  }
+}
+@keyframes revivalShine{to{background-position:-35% 0;}}
 .hero__sub{font-size:clamp(1.15rem,1.9vw,1.4rem);color:rgba(244,242,236,.82);max-width:52ch;margin:1.6rem 0 2.3rem;line-height:1.55;}
 .hero__actions{display:flex;flex-wrap:wrap;gap:.9rem;align-items:center;}
 
@@ -488,7 +503,9 @@ body.is-live .live-dot{display:inline-block;}
    ===================================================================== */
 .foot{position:relative;overflow:hidden;background:var(--navy-900);color:rgba(244,242,236,.72);padding-block:clamp(3rem,6vw,4.5rem) 0;}
 .foot .wrap{position:relative;z-index:1;}
-.foot__crest{display:block;width:100%;max-width:124px;height:auto;margin-top:1.4rem;opacity:.10;pointer-events:none;}
+.foot__crestLink{display:inline-block;margin-top:1.4rem;}
+.foot__crest{display:block;width:100%;max-width:92px;height:auto;opacity:.10;transition:opacity .25s ease;}
+.foot__crestLink:hover .foot__crest,.foot__crestLink:focus-visible .foot__crest{opacity:.24;}
 .foot__grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:2.4rem;padding-bottom:3rem;border-bottom:1px solid rgba(172,152,97,.2);}
 @media(max-width:900px){.foot__grid{grid-template-columns:1fr 1fr;gap:2rem;}}
 @media(max-width:520px){.foot__grid{grid-template-columns:1fr;}}

@@ -150,6 +150,12 @@ h1,h2,h3,h4{font-family:var(--font-head);font-weight:800;line-height:1.02;margin
 .brand__mark path,.brand__mark line,.brand__mark rect,.brand__mark polyline{stroke:var(--gold);}
 .brand__name{font-family:var(--font-head);font-weight:800;font-size:1.72rem;line-height:.92;letter-spacing:.02em;text-transform:uppercase;text-align:left;display:flex;flex-direction:column;justify-content:space-between;height:66px;padding:1px 0;}
 .brand__name span{display:block;font-size:.76rem;line-height:1.16;letter-spacing:.2em;color:var(--gold-soft);font-weight:700;margin-top:0;}
+/* mobile: scale the emblem + wordmark down a touch */
+@media(max-width:600px){
+  .brand__mark.brand__mark--logo{height:46px;}
+  .brand__name{font-size:1.2rem;height:46px;}
+  .brand__name span{font-size:.56rem;}
+}
 
 .nav__links{display:flex;align-items:center;gap:.6rem;list-style:none;margin:0;padding:0;}
 .nav__links a{

@@ -203,6 +203,9 @@ body.is-live .live-dot{display:inline-block;}
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 .hero__overlay{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg, rgba(14,26,45,.92) 0%, rgba(14,26,45,.72) 42%, rgba(14,26,45,.35) 100%);}
+/* very subtle oversized 75 watermark to the left of the hero */
+.hero__mark75{position:absolute;z-index:-1;left:-5%;bottom:0;width:min(560px,52vw);height:auto;opacity:.13;pointer-events:none;}
+@media(max-width:700px){.hero__mark75{width:78vw;left:-14%;opacity:.11;}}
 .hero__watermark{position:absolute;right:-4%;bottom:-8%;width:min(46%,520px);opacity:.10;z-index:-1;}
 .hero__watermark path,.hero__watermark line,.hero__watermark rect,.hero__watermark polyline{stroke:var(--gold-soft);}
 
@@ -368,6 +371,22 @@ body.is-live .live-dot{display:inline-block;}
 .split__figure::after{content:"";position:absolute;inset:0;transform:translate(22px,22px);border:2px solid var(--gold);border-radius:8px;z-index:0;pointer-events:none;}
 .split--feature .split__media{aspect-ratio:5/4;border:none;z-index:1;box-shadow:0 30px 60px -30px rgba(14,26,45,.55);}
 .split__badge{position:absolute;left:-16px;bottom:30px;z-index:2;background:var(--navy);color:var(--paper);font-family:var(--font-ui);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:.68rem;line-height:1;padding:.75rem 1.15rem;border-radius:4px;box-shadow:0 16px 34px -16px rgba(14,26,45,.7);}
+/* subtle 75th-anniversary badge tucked on the home history photo */
+.split__badge75{position:absolute;right:14px;bottom:14px;z-index:2;width:84px;height:84px;display:block;border-radius:14px;overflow:hidden;box-shadow:0 10px 26px -8px rgba(14,26,45,.6);transition:transform .25s ease;}
+.split__badge75 img{display:block;width:100%;height:100%;}
+.split__badge75:hover{transform:translateY(-2px);}
+@media(max-width:560px){.split__badge75{width:64px;height:64px;right:10px;bottom:10px;}}
+
+/* history page: 75th-anniversary feature band */
+.section75{background:var(--mist);color:var(--navy);}
+.section75__inner{display:flex;align-items:center;gap:2.6rem;max-width:880px;margin-inline:auto;}
+.section75__badgeLink{display:block;flex:none;transition:transform .25s ease;}
+.section75__badgeLink:hover{transform:translateY(-3px);}
+.section75__badge{width:168px;height:168px;display:block;border-radius:20px;box-shadow:0 16px 38px -14px rgba(14,26,45,.5);}
+.section75 .eyebrow{color:var(--gold-deep);}
+.section75 h2{font-family:var(--font-body);font-weight:600;font-size:clamp(1.9rem,3.6vw,2.8rem);letter-spacing:-.01em;margin:.25rem 0 .7rem;}
+.section75__body p{margin:0 0 1.4rem;max-width:52ch;}
+@media(max-width:620px){.section75__inner{flex-direction:column;text-align:center;gap:1.5rem;}.section75__body p{margin-inline:auto;}}
 .split__badge b{display:block;color:var(--gold-soft);font-family:var(--font-head);font-size:1.4rem;letter-spacing:.04em;margin-top:.35rem;}
 .split__media .photo-slot{background:
   radial-gradient(120% 90% at 20% 10%, rgba(172,152,97,.22), transparent 55%),

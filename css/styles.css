@@ -241,7 +241,7 @@ body.is-live .live-dot{display:inline-block;}
 /* oversized 75 resting on top of the services strip, subtle */
 .strip-mark75{position:absolute;left:0;bottom:100%;width:min(540px,58vw);height:auto;opacity:.10;pointer-events:none;z-index:0;}
 .services-strip .wrap{position:relative;z-index:1;}
-@media(max-width:700px){.strip-mark75{width:79vw;opacity:.10;}}
+@media(max-width:700px){.strip-mark75{display:none;}}
 .services-strip__grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(1rem,4vw,3rem);padding-block:1.6rem;}
 .svc{display:flex;flex-direction:column;gap:.15rem;}
 .svc__label{font-family:var(--font-ui);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);}
